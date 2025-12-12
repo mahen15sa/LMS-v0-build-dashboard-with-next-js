@@ -6,7 +6,7 @@ export function DashboardFooter() {
   const { t } = useTranslation()
 
   return (
-    <footer className="border-t border-border bg-card py-4 lg:ml-[384px] transition-all duration-300">
+    <footer className="border-t border-border bg-card py-4 transition-all duration-300">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
           <div className="text-muted-foreground">{t("footer.copyright")}</div>
