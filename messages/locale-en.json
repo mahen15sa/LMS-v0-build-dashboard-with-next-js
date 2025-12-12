@@ -1,0 +1,87 @@
+{
+  "common": {
+    "proceed": "PROCEED",
+    "reset": "RESET",
+    "cancel": "CANCEL",
+    "review": "REVIEW",
+    "save": "SAVE",
+    "submit": "SUBMIT",
+    "back": "BACK",
+    "search": "Search",
+    "language": "Language"
+  },
+  "login": {
+    "title": "Login",
+    "username": "User Name",
+    "password": "Password",
+    "forgotPassword": "Forgot Password ?",
+    "showVirtualKeyboard": "Show Virtual Keyboard",
+    "termsConditions": "I agree to the Terms & Conditions",
+    "authentication": "Authentication",
+    "verificationCodeSent": "We have send a verification code on your registered number",
+    "verificationCode": "Verification Code",
+    "resendCode": "Resend Code",
+    "useDifferentMode": "Use different verification mode",
+    "sms": "SMS",
+    "mobile": "Mobile",
+    "biometrics": "BioMetrics",
+    "enterVerificationCodeMobile": "Enter verification code generated on your mobile",
+    "putFingerprint": "Put the finger on the fingerprint scanner to verify"
+  },
+  "infoCard": {
+    "importantInformation": "Important Information",
+    "message": "Message",
+    "importantInfoText": "Kind Attention To Non-Individual Customers Initiating Transactions Of Rs.50 Crores And Above Through RTGS And ETF As Per Central",
+    "messageText": "Kind Attention To Non-Individual Customers Initiating Transactions Of Rs.50 Crores And Above Through RTGS And ETF As Per Central"
+  },
+  "banner": {
+    "newBranch": "Demo Bank is pleased to inform you that our new branch is opening at Mumbai."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "settings": "Settings",
+    "myPreferences": "My Preferences",
+    "editProfile": "Edit Profile",
+    "changePassword": "Change Password",
+    "logout": "Log Out",
+    "branchName": "Branch Name",
+    "lastLoggedIn": "Last Logged In",
+    "lastFailedLogin": "Last Failed Log In",
+    "admin": "Admin"
+  },
+  "menu": {
+    "dashboard": "Dashboard",
+    "setup": "Setup",
+    "lms": "LMS",
+    "reports": "Reports",
+    "maintenance": "Maintenance",
+    "frequentlyUsed": "Frequently Used",
+    "enterKeyword": "Enter Keyword to Search"
+  },
+  "systemParameter": {
+    "title": "System Parameter",
+    "productType": "Product Type",
+    "structureType": "Structure Type",
+    "allowedSweepType": "Allowed Sweep Type",
+    "operatingCurrencyMode": "Operating Currency Mode",
+    "balanceType": "Balance Type",
+    "executionModeFrequency": "Execution Mode and Frequency",
+    "allowedSweepFrequency": "Allowed Sweep Frequency",
+    "allowedSweepExecutionMode": "Allowed Sweep Execution Mode",
+    "sweepReversal": "Sweep Reversal",
+    "maxTTDurationFrom": "Max TT Duration From (HH:MM)",
+    "maxTTDurationTo": "Max TT Duration To (HH:MM)",
+    "holidayHandling": "Holiday Handling",
+    "holidayTreatment": "Holiday Treatment",
+    "holidayTreatmentCurrencyHoliday": "Holiday Treatment (Currency Holiday)",
+    "sweepPostCurrencyCutOff": "Sweep Post Currency Cut-Off"
+  },
+  "footer": {
+    "copyright": "Copyright © 2025 Aurionpro Solutions Limited",
+    "activation": "Activation",
+    "branch": "Branch",
+    "privacy": "Privacy",
+    "contactUs": "Contact Us",
+    "customerCare": "Customer Care"
+  }
+}
