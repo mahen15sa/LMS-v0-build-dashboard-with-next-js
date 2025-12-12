@@ -1,5 +1,6 @@
 "use client"
 import { useTranslation } from "@/contexts/TranslationContext"
+import { useRouter } from "next/navigation"
 import { Menu, Search, Grid, Mail, Bell, Moon, Calculator, Globe, HelpCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,6 +20,7 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ onMenuClick, onMegaMenuClick }: DashboardHeaderProps) {
   const { t } = useTranslation()
+  const router = useRouter()
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-primary text-primary-foreground shadow-lg">
@@ -32,7 +34,13 @@ export function DashboardHeader({ onMenuClick, onMegaMenuClick }: DashboardHeade
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <div className="text-xl font-bold">CIB</div>
+          <div
+            className="text-xl font-bold cursor-pointer select-none"
+            onClick={() => router.push("/dashboard")}
+            title="Go to Dashboard"
+          >
+            CIB
+          </div>
           <div className="hidden md:flex items-center gap-2 ml-4">
             <Search className="h-4 w-4 text-primary-foreground/70" />
             <Input
@@ -107,7 +115,12 @@ export function DashboardHeader({ onMenuClick, onMegaMenuClick }: DashboardHeade
               <DropdownMenuItem className="cursor-pointer">{t("dashboard.editProfile")}</DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">{t("dashboard.changePassword")}</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer text-destructive">{t("dashboard.logout")}</DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer text-destructive"
+                onClick={() => router.push("/")}
+              >
+                {t("dashboard.logout")}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

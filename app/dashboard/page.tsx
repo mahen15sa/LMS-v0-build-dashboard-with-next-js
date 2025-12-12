@@ -21,7 +21,7 @@ export default function DashboardPage() {
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <MegaMenu open={megaMenuOpen} onClose={() => setMegaMenuOpen(false)} />
 
-      <main className="flex-1 pt-16 lg:ml-[384px] transition-all duration-300">
+      <main className="flex-1 pt-16 transition-all duration-300">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center py-20">
             <h1 className="text-4xl font-bold text-foreground mb-4">Welcome to Dashboard</h1>

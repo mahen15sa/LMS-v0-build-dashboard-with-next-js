@@ -297,30 +297,7 @@ export const megaMenuConfig: Record<string, MegaMenuSection[]> = {
     },
   ],
   lms: [
-    {
-      title: "General Masters",
-      items: [
         {
-          id: "currency",
-          label: "Currency",
-          children: [
-            { id: "currency-initiate", label: "Initiate", path: "/lms/currency/initiate" },
-            { id: "currency-listing", label: "Listing", path: "/lms/currency/listing" },
-          ],
-        },
-        {
-          id: "geography",
-          label: "Geography",
-          path: "/lms/geography",
-        },
-        {
-          id: "location",
-          label: "Location",
-          path: "/lms/location",
-        },
-      ],
-    },
-    {
       title: "Maintenance",
       items: [
         {
@@ -330,77 +307,7 @@ export const megaMenuConfig: Record<string, MegaMenuSection[]> = {
             { id: "system-parameter-initiate", label: "Initiate", path: "/lms/maintenance/system-parameter/initiate" },
             { id: "system-parameter-listing", label: "Listing", path: "/lms/maintenance/system-parameter/listing" },
           ],
-        },
-        {
-          id: "product-parameter",
-          label: "Product Parameter",
-          path: "/lms/maintenance/product-parameter",
-        },
-        {
-          id: "sweep-structure",
-          label: "Sweep Structure",
-          path: "/lms/maintenance/sweep-structure",
-        },
-        {
-          id: "manual-sweep-execution",
-          label: "Manual Sweep Execution",
-          path: "/lms/maintenance/manual-sweep-execution",
-        },
-        {
-          id: "accounting-role",
-          label: "Accounting Role",
-          path: "/lms/maintenance/accounting-role",
-        },
-        {
-          id: "accounting-entry-code",
-          label: "Accounting Entry Code",
-          path: "/lms/maintenance/accounting-entry-code",
-        },
-        {
-          id: "accounting-entries",
-          label: "Accounting Entries",
-          path: "/lms/maintenance/accounting-entries",
-        },
-        {
-          id: "account-mapping",
-          label: "Account Mapping",
-          path: "/lms/maintenance/account-mapping",
-        },
-        {
-          id: "sweep-simulation",
-          label: "Sweep Simulation",
-          path: "/lms/maintenance/sweep-simulation",
-        },
-      ],
-    },
-    {
-      title: "CIB Setup",
-      items: [
-        {
-          id: "ui-configuration",
-          label: "UI Configuration",
-          path: "/lms/cib-setup/ui-configuration",
-        },
-        {
-          id: "dynamic-form-builder",
-          label: "Dynamic Form Builder",
-          path: "/lms/cib-setup/dynamic-form-builder",
-        },
-      ],
-    },
-    {
-      title: "Security-Bank",
-      items: [
-        {
-          id: "bank-role",
-          label: "Bank Role",
-          path: "/lms/security-bank/bank-role",
-        },
-        {
-          id: "bank-profile",
-          label: "Bank Profile",
-          path: "/lms/security-bank/bank-profile",
-        },
+        }
       ],
     },
   ],

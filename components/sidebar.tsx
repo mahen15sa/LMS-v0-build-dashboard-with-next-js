@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { useEffect, useRef } from "react"
 
 interface SidebarProps {
   open: boolean
@@ -24,6 +25,19 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 }
 
 export function Sidebar({ open, onClose }: SidebarProps) {
+    const sidebarRef = useRef<HTMLDivElement>(null)
+
+    // Close sidebar if clicking outside (desktop and mobile)
+    useEffect(() => {
+      if (!open) return
+      function handleClick(event: MouseEvent) {
+        if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+          onClose()
+        }
+      }
+      document.addEventListener("mousedown", handleClick)
+      return () => document.removeEventListener("mousedown", handleClick)
+    }, [open, onClose])
   const { t } = useTranslation()
   const [activeMenu, setActiveMenu] = useState<string>("lms")
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({ "system-parameter": true })
@@ -119,9 +133,10 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       {open && <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={onClose} />}
 
       <div
+        ref={sidebarRef}
         className={cn(
           "fixed left-0 top-0 h-screen bg-white z-50 transition-transform duration-300 flex",
-          open ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+          open ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="w-16 bg-gray-50 border-r border-gray-200 flex flex-col items-center py-4 gap-2">
