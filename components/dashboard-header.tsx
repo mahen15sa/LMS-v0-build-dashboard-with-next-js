@@ -34,12 +34,8 @@ export function DashboardHeader({ onMenuClick, onMegaMenuClick }: DashboardHeade
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <div
-            className="text-xl font-bold cursor-pointer select-none"
-            onClick={() => router.push("/dashboard")}
-            title="Go to Dashboard"
-          >
-            CIB
+          <div className="cursor-pointer select-none" onClick={() => router.push("/dashboard")} title="Go to Dashboard">
+            <img src="/images/aurionpro-logo.png" alt="Aurionpro" className="h-8 brightness-0 invert" />
           </div>
           <div className="hidden md:flex items-center gap-2 ml-4">
             <Search className="h-4 w-4 text-primary-foreground/70" />
@@ -115,10 +111,7 @@ export function DashboardHeader({ onMenuClick, onMegaMenuClick }: DashboardHeade
               <DropdownMenuItem className="cursor-pointer">{t("dashboard.editProfile")}</DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">{t("dashboard.changePassword")}</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="cursor-pointer text-destructive"
-                onClick={() => router.push("/")}
-              >
+              <DropdownMenuItem className="cursor-pointer text-destructive" onClick={() => router.push("/")}>
                 {t("dashboard.logout")}
               </DropdownMenuItem>
             </DropdownMenuContent>
