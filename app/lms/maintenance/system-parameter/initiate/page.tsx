@@ -59,7 +59,8 @@ export default function SystemParameterInitiatePage() {
     sweepPostCurrencyCutOff: false,
   })
 
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({})
+  const [isReviewMode, setIsReviewMode] = useState(false)
 
   useEffect(() => {
     if (formData.productType) {
@@ -79,14 +80,14 @@ export default function SystemParameterInitiatePage() {
         holidayTreatmentCurrencyHoliday: "",
         sweepPostCurrencyCutOff: false,
       }))
-      setErrors({})
+      setFormErrors({})
     }
   }, [formData.productType])
 
   const handleMultiSelectChange = (field: keyof FormData, values: string[]) => {
     setFormData((prev) => ({ ...prev, [field]: values }))
-    if (errors[field]) {
-      setErrors((prev) => {
+    if (formErrors[field]) {
+      setFormErrors((prev) => {
         const newErrors = { ...prev }
         delete newErrors[field]
         return newErrors
@@ -96,8 +97,8 @@ export default function SystemParameterInitiatePage() {
 
   const handleInputChange = (field: keyof FormData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
-    if (errors[field]) {
-      setErrors((prev) => {
+    if (formErrors[field]) {
+      setFormErrors((prev) => {
         const newErrors = { ...prev }
         delete newErrors[field]
         return newErrors
@@ -105,13 +106,11 @@ export default function SystemParameterInitiatePage() {
     }
   }
 
-  const validateForm = (): boolean => {
+  const validateForm = (): Record<string, string> => {
     const newErrors: Record<string, string> = {}
 
     if (!formData.productType) {
       newErrors.productType = "Product Type is mandatory"
-      setErrors(newErrors)
-      return false
     }
 
     if (formData.productType === "Sweep") {
@@ -144,43 +143,71 @@ export default function SystemParameterInitiatePage() {
       }
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+    setFormErrors(newErrors)
+    return newErrors
   }
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      addRecord({
-        productType: formData.productType,
-        allowedSweepCategory: formData.allowedSweepCategory,
-        structureType: formData.structureType,
-        allowedSweepType: formData.allowedSweepType,
-        operatingCurrencyMode: formData.operatingCurrencyMode.join(", "),
-        balanceType: formData.balanceType.join(", "),
-        allowedSweepFrequency: formData.allowedSweepFrequency,
-        allowedSweepExecutionMode: formData.allowedSweepExecutionMode,
-        sweepReversal: formData.sweepReversal,
-        maxTTDurationFrom: formData.maxTTDurationFrom,
-        maxTTDurationTo: formData.maxTTDurationTo,
-        holidayTreatment: formData.holidayTreatment,
-        holidayTreatmentCurrencyHoliday: formData.holidayTreatmentCurrencyHoliday,
-        sweepPostCurrencyCutOff: formData.sweepPostCurrencyCutOff,
-        action: "Create",
-        allowedCurrencies: [],
+  const handleReview = () => {
+    const errors = validateForm()
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors)
+      toast({
+        title: "Validation Error",
+        description: "Please fix all errors before reviewing",
+        variant: "destructive",
       })
+      return
+    }
+    setIsReviewMode(true)
+  }
+
+  const handleSubmit = async () => {
+    try {
+      const errors = validateForm()
+      if (Object.keys(errors).length > 0) {
+        setFormErrors(errors)
+        toast({
+          title: "Validation Error",
+          description: "Please fix all errors before submitting",
+          variant: "destructive",
+        })
+        return
+      }
+
+      const response = await fetch("/api/system-parameter/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to submit system parameter")
+      }
+
+      const data = await response.json()
 
       toast({
         title: "Success",
-        description: "System Parameter initiated successfully",
+        description: "System Parameter submitted successfully",
       })
 
-      setTimeout(() => {
-        router.push("/lms/maintenance/system-parameter/listing")
-      }, 1500)
-    } else {
+      addRecord({
+        ...formData,
+        _id: data.recordId,
+        status: "PENDING_AUTHORIZATION",
+        createdAt: new Date(),
+        maker: "USER001",
+        checker: null,
+      })
+
+      router.push("/lms/maintenance/system-parameter/listing")
+    } catch (error) {
+      console.error("Error submitting form:", error)
       toast({
-        title: "Validation Error",
-        description: "Please fill all mandatory fields",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to submit form",
         variant: "destructive",
       })
     }
@@ -230,9 +257,7 @@ export default function SystemParameterInitiatePage() {
 
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="space-y-6">
-              {/* Section 1: System Parameter - Top row with 4 fields */}
               <div className="grid grid-cols-4 gap-4">
-                {/* Product Type */}
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-gray-700">
                     Product Type <span className="text-primary">*</span>
@@ -241,7 +266,7 @@ export default function SystemParameterInitiatePage() {
                     value={formData.productType}
                     onValueChange={(value) => handleInputChange("productType", value)}
                   >
-                    <SelectTrigger className={`h-10 ${errors.productType ? "border-red-500" : "border-gray-300"}`}>
+                    <SelectTrigger className={`h-10 ${formErrors.productType ? "border-red-500" : "border-gray-300"}`}>
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
@@ -250,10 +275,9 @@ export default function SystemParameterInitiatePage() {
                       <SelectItem value="ICL">ICL</SelectItem>
                     </SelectContent>
                   </Select>
-                  {errors.productType && <p className="text-xs text-red-500">{errors.productType}</p>}
+                  {formErrors.productType && <p className="text-xs text-red-500">{formErrors.productType}</p>}
                 </div>
 
-                {/* Allowed Sweep Category */}
                 {formData.productType === "Sweep" && (
                   <MultiSelectDropdown
                     label="Allowed Sweep Category"
@@ -262,11 +286,10 @@ export default function SystemParameterInitiatePage() {
                     options={["Domestic", "Cross Border", "Cross Bank"]}
                     value={formData.allowedSweepCategory}
                     onChange={(values) => handleMultiSelectChange("allowedSweepCategory", values)}
-                    error={errors.allowedSweepCategory}
+                    error={formErrors.allowedSweepCategory}
                   />
                 )}
 
-                {/* Structure Type */}
                 {formData.productType === "Sweep" && (
                   <MultiSelectDropdown
                     label="Structure Type"
@@ -275,11 +298,10 @@ export default function SystemParameterInitiatePage() {
                     options={["Single Tier", "Hierarchy"]}
                     value={formData.structureType}
                     onChange={(values) => handleMultiSelectChange("structureType", values)}
-                    error={errors.structureType}
+                    error={formErrors.structureType}
                   />
                 )}
 
-                {/* Allowed Sweep Type */}
                 {formData.productType === "Sweep" && (
                   <MultiSelectDropdown
                     label="Allowed Sweep Type"
@@ -288,12 +310,11 @@ export default function SystemParameterInitiatePage() {
                     options={["Target Balance", "Threshold Balance", "Percentage"]}
                     value={formData.allowedSweepType}
                     onChange={(values) => handleMultiSelectChange("allowedSweepType", values)}
-                    error={errors.allowedSweepType}
+                    error={formErrors.allowedSweepType}
                   />
                 )}
               </div>
 
-              {/* Second row with Operating Currency Mode and Balance Type */}
               {formData.productType === "Sweep" && (
                 <div className="grid grid-cols-4 gap-4">
                   <MultiSelectDropdown
@@ -303,7 +324,7 @@ export default function SystemParameterInitiatePage() {
                     options={["Mono CCY", "Cross CCY", "Multi CCY"]}
                     value={formData.operatingCurrencyMode}
                     onChange={(values) => handleMultiSelectChange("operatingCurrencyMode", values)}
-                    error={errors.operatingCurrencyMode}
+                    error={formErrors.operatingCurrencyMode}
                   />
 
                   <MultiSelectDropdown
@@ -313,12 +334,11 @@ export default function SystemParameterInitiatePage() {
                     options={["Available Balance", "Ledger Balance", "Current Balance"]}
                     value={formData.balanceType}
                     onChange={(values) => handleMultiSelectChange("balanceType", values)}
-                    error={errors.balanceType}
+                    error={formErrors.balanceType}
                   />
                 </div>
               )}
 
-              {/* Section 2: Execution Mode and Frequency */}
               {formData.productType === "Sweep" && (
                 <>
                   <div className="border-t border-gray-200 pt-6 mt-6">
@@ -332,7 +352,7 @@ export default function SystemParameterInitiatePage() {
                         options={["Daily", "Weekly", "Monthly", "On Demand"]}
                         value={formData.allowedSweepFrequency}
                         onChange={(values) => handleMultiSelectChange("allowedSweepFrequency", values)}
-                        error={errors.allowedSweepFrequency}
+                        error={formErrors.allowedSweepFrequency}
                       />
 
                       <MultiSelectDropdown
@@ -342,7 +362,7 @@ export default function SystemParameterInitiatePage() {
                         options={["EOD", "Time Triggered", "Balance Triggered"]}
                         value={formData.allowedSweepExecutionMode}
                         onChange={(values) => handleMultiSelectChange("allowedSweepExecutionMode", values)}
-                        error={errors.allowedSweepExecutionMode}
+                        error={formErrors.allowedSweepExecutionMode}
                       />
 
                       <div className="space-y-2">
@@ -387,7 +407,6 @@ export default function SystemParameterInitiatePage() {
                 </>
               )}
 
-              {/* Section 3: Holiday Handling */}
               {formData.productType === "Sweep" && (
                 <div className="border-t border-gray-200 pt-6 mt-6">
                   <h2 className="text-base font-semibold text-gray-900 mb-4">Holiday Handling</h2>
@@ -402,7 +421,7 @@ export default function SystemParameterInitiatePage() {
                         onValueChange={(value) => handleInputChange("holidayTreatment", value)}
                       >
                         <SelectTrigger
-                          className={`h-10 ${errors.holidayTreatment ? "border-red-500" : "border-gray-300"}`}
+                          className={`h-10 ${formErrors.holidayTreatment ? "border-red-500" : "border-gray-300"}`}
                         >
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
@@ -412,7 +431,9 @@ export default function SystemParameterInitiatePage() {
                           <SelectItem value="Next Working Day">Next Working Day</SelectItem>
                         </SelectContent>
                       </Select>
-                      {errors.holidayTreatment && <p className="text-xs text-red-500">{errors.holidayTreatment}</p>}
+                      {formErrors.holidayTreatment && (
+                        <p className="text-xs text-red-500">{formErrors.holidayTreatment}</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -424,7 +445,7 @@ export default function SystemParameterInitiatePage() {
                         onValueChange={(value) => handleInputChange("holidayTreatmentCurrencyHoliday", value)}
                       >
                         <SelectTrigger
-                          className={`h-10 ${errors.holidayTreatmentCurrencyHoliday ? "border-red-500" : "border-gray-300"}`}
+                          className={`h-10 ${formErrors.holidayTreatmentCurrencyHoliday ? "border-red-500" : "border-gray-300"}`}
                         >
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
@@ -434,8 +455,8 @@ export default function SystemParameterInitiatePage() {
                           <SelectItem value="Next Working Day">Next Working Day</SelectItem>
                         </SelectContent>
                       </Select>
-                      {errors.holidayTreatmentCurrencyHoliday && (
-                        <p className="text-xs text-red-500">{errors.holidayTreatmentCurrencyHoliday}</p>
+                      {formErrors.holidayTreatmentCurrencyHoliday && (
+                        <p className="text-xs text-red-500">{formErrors.holidayTreatmentCurrencyHoliday}</p>
                       )}
                     </div>
 
@@ -452,14 +473,20 @@ export default function SystemParameterInitiatePage() {
                 </div>
               )}
 
-              {/* Action Buttons */}
               <div className="flex items-center justify-between pt-6 mt-6 border-t border-gray-200">
                 <Button variant="ghost" onClick={handleCancel} className="text-primary hover:text-primary/80">
                   CANCEL
                 </Button>
-                <Button onClick={handleSubmit} className="bg-gray-300 hover:bg-gray-400 text-gray-700">
-                  REVIEW
-                </Button>
+                {!isReviewMode && (
+                  <Button onClick={handleReview} className="bg-gray-300 hover:bg-gray-400 text-gray-700">
+                    REVIEW
+                  </Button>
+                )}
+                {isReviewMode && (
+                  <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/80 text-white">
+                    SUBMIT
+                  </Button>
+                )}
               </div>
             </div>
           </div>
