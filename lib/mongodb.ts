@@ -2,7 +2,7 @@ import { MongoClient, ServerApiVersion } from "mongodb"
 
 const uri =
   process.env.MONGODB_URI ||
-  "mongodb+srv://mahendrasakpal_db_user:Mahendra@@1515@cluster0.z0q70lk.mongodb.net/?appName=Cluster0"
+  "mongodb+srv://mahendrasakpal_db_user:Mahendra%401515@cluster0.z0q70lk.mongodb.net/?appName=Cluster0"
 
 let cachedClient: MongoClient | null = null
 let cachedDb: any = null
